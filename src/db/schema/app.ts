@@ -10,7 +10,7 @@ export const departements = pgTable('departements', {
     id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
     code: varchar('code', {length:50}).notNull(),
     name: varchar('name', {length: 255}).notNull().unique(),
-    description: varchar('description', {length: 255}),
+    description: varchar('decription', {length: 255}),
     ... timestamps
 });
 
@@ -19,7 +19,7 @@ export const subjects = pgTable('subjects', {
     departementId: integer('departement_id').notNull().references(() => departements.id, { onDelete: 'restrict'}),
     name: varchar('name', {length: 255}).notNull(),
     code: varchar('code', {length: 50}).notNull().unique(),
-    description: varchar('description', {length: 255}),
+    description: varchar('decription', {length: 255}),
     ... timestamps
 });
 
