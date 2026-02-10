@@ -1,0 +1,2 @@
+### GET 
+GET http://localhost:8000/api/subjects?page-2
