@@ -9,9 +9,15 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     try {
         const { search, departement, page = '1', limit = '10' } = req.query;
+        const parsePositiveInt = (value: unknown, fallback: number) => {
+            const raw = Array.isArray(value) ? value[0] : value;
+            const n = typeof raw === 'string' ? Number(raw) : NaN;
+            return Number.isFinite(n) && n >= 1 ? n : fallback;
+            };
 
-        const currentPage = Math.max(1, Number(page));
-        const limitPerPage = Math.max(1, Number(limit));
+       const currentPage = parsePositiveInt(page, 1);
+       const limitPerPage = parsePositiveInt(limit, 10);
+
 
         const offset = (currentPage - 1) * limitPerPage;
 
@@ -28,8 +34,13 @@ router.get("/", async (req, res) => {
         }
 
         // if departement provided, filter by departement id
-        if (departement) {
-            filterConditions.push(eq(subjects.departementId, Number(departement)));
+        if (departement !== undefined) {    
+            const depRaw = Array.isArray(departement) ? departement[0] : departement;
+            const depId = typeof depRaw === 'string' ? Number(depRaw) : NaN;          
+        if (!Number.isFinite(depId)) {
+        return res.status(400).json({ error: "Invalid departement" });
+        }
+        filterConditions.push(eq(subjects.departementId, depId));
         }
 
         // combine all filters using AND if any exist
